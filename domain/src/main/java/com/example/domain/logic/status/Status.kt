@@ -1,4 +1,4 @@
-package com.example.domain.status
+package com.example.domain.logic.status
 
 sealed class Status() {
     class Read():Status()

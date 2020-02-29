@@ -1,4 +1,4 @@
-package com.example.domain
+package com.example.domain.logic
 
 interface User {
     var name:String
