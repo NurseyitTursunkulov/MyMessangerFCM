@@ -2,9 +2,10 @@ package com.example.domain.implementation.core
 
 import com.example.domain.logic.User
 import com.example.domain.logic.core.GetAllUsersUseCase
+import com.example.domain.logic.core.RepositoryMessanger
 
-class GetAllusersUcImpl : GetAllUsersUseCase {
+class GetAllusersUcImpl(val repository: RepositoryMessanger) : GetAllUsersUseCase {
     override fun invoke(): List<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+      return repository.getAllUsers()
     }
 }
