@@ -14,7 +14,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -62,4 +62,6 @@ dependencies {
     implementation "org.koin:koin-androidx-fragment:$koin_version"
 // Koin AndroidX Experimental features
     implementation "org.koin:koin-androidx-ext:$koin_version"
+
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
 }
