@@ -1,6 +1,11 @@
 package com.example.mymessangerfcm
 
 import android.app.Application
+import com.example.data.implementation.core.RepositoryMessangerImpl
+import com.example.data.logic.core.RepositoryMessanger
+import com.example.domain.implementation.core.MessangerDomain
+import com.example.domain.implementation.core.SendMessageUcImpl
+import com.example.domain.logic.core.SendMessageUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
@@ -28,7 +33,11 @@ class App : Application() {
         }
     }
 
-    val offlineWeatherApp: Module = module {
-
+    private val offlineWeatherApp: Module = module {
+        viewModel {
+            MessangerViewModel(messangerDomain = MessangerDomain(sendMessageUseCase = get()))
+        }
+        single<SendMessageUseCase> { SendMessageUcImpl(repositoryMessanger = get()) }
+        single<RepositoryMessanger>{ RepositoryMessangerImpl() }
     }
 }
