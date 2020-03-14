@@ -1,8 +1,8 @@
 package com.example.mymessangerfcm
 
 import android.app.Application
-import com.example.data.implementation.core.RepositoryMessangerImpl
-import com.example.data.logic.core.RepositoryMessanger
+import com.example.core.data.implementation.core.RepositoryMessangerImpl
+import com.example.core.data.logic.core.RepositoryMessanger
 import com.example.domain.implementation.core.MessangerDomain
 import com.example.domain.implementation.core.SendMessageUcImpl
 import com.example.domain.logic.core.SendMessageUseCase

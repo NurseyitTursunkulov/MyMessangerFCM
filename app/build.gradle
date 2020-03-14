@@ -64,8 +64,9 @@ dependencies {
 // Koin AndroidX Experimental features
     implementation "org.koin:koin-androidx-ext:$koin_version"
 
-    implementation project(":domain")
-    implementation project(":data")
-    implementation project(":comunicator")
+//    implementation project(":domain")
+//    implementation project(":data")
+//    implementation project(":comunicator")
+    implementation project(":core")
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
 }

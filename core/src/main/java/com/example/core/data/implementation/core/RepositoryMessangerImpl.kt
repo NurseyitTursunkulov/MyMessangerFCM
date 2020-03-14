@@ -1,7 +1,7 @@
-package com.example.data.implementation.core
+package com.example.core.data.implementation.core
 
 import com.example.comunicator.Message
-import com.example.data.logic.core.RepositoryMessanger
+import com.example.core.data.logic.core.RepositoryMessanger
 import com.google.firebase.firestore.FirebaseFirestore
 
 class RepositoryMessangerImpl : RepositoryMessanger {
