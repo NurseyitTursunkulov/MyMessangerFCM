@@ -1,21 +1,33 @@
 package com.example.mymessangerfcm
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.comunicator.Message
-import com.example.domain.implementation.core.MessangerDomain
+import com.example.domain.implementation.core.MessangerDomainImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MessangerViewModel(val messangerDomain : MessangerDomain) : ViewModel() {
+class MessangerViewModel(val messangerDomainImpl: MessangerDomainImpl) : ViewModel() {
+
+    val newMessageLiveData: LiveData<Message> = messangerDomainImpl.newMessages
+
+    init {
+        messangerDomainImpl.observeNewMessages()
+    }
 
     fun sendMessage(message: Message) {
-        viewModelScope.launch{
-            withContext(Dispatchers.IO){
-                messangerDomain.sendMessage(message = message)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                messangerDomainImpl.sendMessage(message = message)
             }
         }
 
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        messangerDomainImpl.unsubscribeFromNewMessages()
     }
 }
