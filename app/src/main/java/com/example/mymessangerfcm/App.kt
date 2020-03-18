@@ -3,7 +3,7 @@ package com.example.mymessangerfcm
 import android.app.Application
 import com.example.core.data.implementation.core.RepositoryMessangerImpl
 import com.example.core.data.logic.core.RepositoryMessanger
-import com.example.domain.implementation.core.MessangerDomainImpl
+import com.example.core.domain.implementation.MessangerDomainImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger

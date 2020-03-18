@@ -1,4 +1,4 @@
-package com.example.domain.implementation.core
+package com.example.core.domain.implementation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,9 +9,11 @@ import com.example.core.domain.logic.core.MessangerDomain
 class MessangerDomainImpl(
     val repositoryMessanger: RepositoryMessanger
 ) : MessangerDomain {
+
     init {
         repositoryMessanger.domain = this
     }
+
     private val _newMessages: MutableLiveData<Message> = MutableLiveData()
     override val newMessages: LiveData<Message> = _newMessages
 
