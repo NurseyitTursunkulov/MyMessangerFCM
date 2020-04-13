@@ -5,6 +5,13 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
 
+    <action
+        android:id="@+id/action_Global_to_SecondFragment"
+        app:destination="@id/SecondFragment" />
+    <action
+        android:id="@+id/action_chatChannel_to_chatFragment"
+        app:destination="@id/chatFragment" />
+
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.mymessangerfcm.FirstFragment"
@@ -40,4 +47,16 @@
             android:id="@+id/action_homeFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/chatChannel"
+        android:name="com.example.mymessangerfcm.chatChannels.ChatChannelFragment"
+        android:label="fragment_chat_channel"
+        tools:layout="@layout/fragment_chat_channel" >
+
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.mymessangerfcm.chat.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
 </navigation>

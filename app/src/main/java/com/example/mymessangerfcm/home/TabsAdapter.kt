@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.mymessangerfcm.FirstFragment
+import com.example.mymessangerfcm.chatChannels.ChatChannelFragment
 
 const val EMPTY_TITLE = "empty_title"
 val TAB_TITLES = mapOf(1 to "chats", 2 to "status", 3 to "calls")
@@ -19,7 +20,7 @@ class TabsAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     override fun createFragment(position: Int): Fragment {
         val fragment: Fragment
         if (position == 1) {
-            fragment = FirstFragment()
+            fragment = ChatChannelFragment()
         } else {
             fragment = FirstFragment()
             fragment.arguments = Bundle().apply {

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.comunicator.Message
 import com.example.core.data.logic.core.RepositoryMessanger
+import com.example.core.domain.logic.core.Chat
 import com.example.core.domain.logic.core.MessangerDomain
 
 class MessangerDomainImpl(
@@ -32,4 +33,8 @@ class MessangerDomainImpl(
     override fun onNewMessageRecieved(message: Message) {
         _newMessages.postValue(message)
     }
+
+    override suspend fun getChats(): List<Chat> =
+        repositoryMessanger.getChats()
+
 }

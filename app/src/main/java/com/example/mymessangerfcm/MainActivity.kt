@@ -1,6 +1,8 @@
 package com.example.mymessangerfcm
 
 import android.app.Activity
+import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.app.ActivityCompat
+import com.example.core.domain.logic.core.User
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -33,6 +38,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun singIn() {
         val user = FirebaseAuth.getInstance().currentUser
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build())
         if (user!=null) {
             // User is signed in.
 
@@ -43,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(
                 AuthUI.getInstance()
                     .createSignInIntentBuilder()
-                    .setAvailableProviders(arrayListOf(AuthUI.IdpConfig.GoogleBuilder().build()))
+                    .setAvailableProviders(providers)
                     .build(),
                 RC_SIGN_IN
             )
@@ -75,7 +83,11 @@ class MainActivity : AppCompatActivity() {
 
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in
-                val user = FirebaseAuth.getInstance().currentUser
+                val progressDialog = indeterminateProgressDialog("Setting up your account")
+                initCurrentUserIfFirstTime {
+//                    startActivity(intentFor<MainActivity>().newTask().clearTask())
+                    progressDialog.dismiss()
+                }
                 // ...
             } else {
                 // Sign in failed. If response is null the user canceled the
@@ -84,5 +96,43 @@ class MainActivity : AppCompatActivity() {
                 // ...
             }
         }
+    }
+}
+
+fun Context.indeterminateProgressDialog(
+    message: CharSequence? = null,
+    title: CharSequence? = null,
+    init: (ProgressDialog.() -> Unit)? = null
+) = progressDialog(true, message, title, init)
+
+
+private fun Context.progressDialog(
+    indeterminate: Boolean,
+    message: CharSequence? = null,
+    title: CharSequence? = null,
+    init: (ProgressDialog.() -> Unit)? = null
+) = ProgressDialog(this).apply {
+    isIndeterminate = indeterminate
+    if (!indeterminate) setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+    if (message != null) setMessage(message)
+    if (title != null) setTitle(title)
+    if (init != null) init()
+    show()
+}
+
+private val currentUserDocRef: DocumentReference
+    get() = FirebaseFirestore.getInstance().document("users/${FirebaseAuth.getInstance().currentUser?.uid
+        ?: throw NullPointerException("UID is null.")}")
+
+fun initCurrentUserIfFirstTime(onComplete: () -> Unit) {
+    currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
+        if (!documentSnapshot.exists()) {
+            val newUser = User(FirebaseAuth.getInstance().currentUser?.displayName ?: "",
+                "", null)
+            currentUserDocRef.set(newUser).addOnSuccessListener {
+                onComplete()
+            }
+        } else
+            onComplete()
     }
 }

@@ -7,4 +7,7 @@ interface MessangerDomain : LifeCycleObserver {
     val newMessages: LiveData<Message>
     suspend fun sendMessage(message: Message)
     fun onNewMessageRecieved(message: Message)
+
+    suspend fun getChats():List<Chat>
+
 }
