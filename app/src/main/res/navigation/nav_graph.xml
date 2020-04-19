@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/chatChannel"
-        android:name="com.example.mymessangerfcm.chatChannels.ChatChannelFragment"
+        android:name="com.example.mymessangerfcm.chatChannels.ChatChannelsFragment"
         android:label="fragment_chat_channel"
         tools:layout="@layout/fragment_chat_channel" >
 

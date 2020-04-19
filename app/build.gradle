@@ -75,4 +75,5 @@ dependencies {
     implementation project(":core")
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation("io.coil-kt:coil:0.9.5")
 }

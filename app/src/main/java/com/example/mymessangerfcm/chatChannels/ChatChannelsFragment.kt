@@ -10,13 +10,16 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.api.load
+import coil.transform.CircleCropTransformation
 import com.example.mymessangerfcm.MessangerViewModel
 import com.example.mymessangerfcm.R
 import com.example.mymessangerfcm.chat.EventObserver
 import com.example.mymessangerfcm.databinding.FragmentChatChannelBinding
+import kotlinx.android.synthetic.main.fragment_chat.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class ChatChannelFragment : Fragment() {
+class ChatChannelsFragment : Fragment() {
 
     private lateinit var viewDataBinding: FragmentChatChannelBinding
     val messangerViewModel: MessangerViewModel by sharedViewModel()

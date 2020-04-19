@@ -14,7 +14,8 @@
   ~ limitations under the License.
   -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -29,24 +30,47 @@
             type="com.example.mymessangerfcm.MessangerViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_root"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/listPreferredItemHeight"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <CheckBox
-            android:id="@+id/complete_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical" />
+        <ImageView
+            android:id="@+id/avatar_group"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:src="@mipmap/ava"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/title_text"
-            android:layout_width="match_parent"
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@{task.recieverName}"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="end"
+            android:ems="3"
+            android:gravity="start"
+            android:maxLines="1"
             android:onClick="@{(view) -> viewmodel.openChat(task)}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-    </LinearLayout>
+            android:singleLine="true"
+            android:text="@{task.recieverName}"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/avatar_group"
+            app:layout_constraintTop_toTopOf="@+id/avatar_group"
+            tools:text="Nurs" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

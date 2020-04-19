@@ -20,8 +20,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
+import coil.transform.CircleCropTransformation
 import com.example.core.domain.logic.core.Chat
 import com.example.mymessangerfcm.MessangerViewModel
+import com.example.mymessangerfcm.R
 import com.example.mymessangerfcm.databinding.ChatItemBinding
 
 /**
@@ -47,6 +50,9 @@ class TasksAdapter(private val viewModel: MessangerViewModel) :
 
             binding.viewmodel = viewModel
             binding.task = item
+            binding.avatarGroup.load(R.mipmap.ava){
+                transformations(CircleCropTransformation())
+            }
             binding.executePendingBindings()
         }
 
