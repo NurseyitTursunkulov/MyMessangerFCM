@@ -14,19 +14,27 @@ import kotlinx.coroutines.withContext
 
 class MessangerViewModel(val messangerDomainImpl: MessangerDomainImpl) : ViewModel() {
 
+    var messageInputText: String = ""
+
     val newMessageLiveData: LiveData<Message> = messangerDomainImpl.newMessages
+
     private val _items = MutableLiveData<List<Chat>>().apply { value = emptyList() }
     val items: LiveData<List<Chat>> = _items
 
     private val _navigateToChatEvent: MutableLiveData<Event<Chat>> = MutableLiveData()
     val navigateToChatEvent: LiveData<Event<Chat>> = _navigateToChatEvent
 
+    private val _dataLoading = MutableLiveData<Boolean>()
+    val dataLoading: LiveData<Boolean> = _dataLoading
+
     init {
         messangerDomainImpl.observeNewMessages()
         viewModelScope.launch {
+            _dataLoading.postValue(true)
             withContext(Dispatchers.IO) {
                 var h: List<Chat> = messangerDomainImpl.getChats()
                 _items.postValue(h)
+                _dataLoading.postValue(false)
             }
         }
     }
