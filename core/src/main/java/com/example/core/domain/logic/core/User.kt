@@ -1,7 +1,10 @@
 package com.example.core.domain.logic.core
 
-data class User(val name: String,
-                val bio: String,
-                val profilePicturePath: String?) {
-    constructor(): this("", "", null)
-}
+import java.util.*
+
+data class User(
+    var id:String= UUID.randomUUID().toString(),
+    var name: String = "",
+    var bio: String="",
+    var profilePicturePath: String?=null
+)

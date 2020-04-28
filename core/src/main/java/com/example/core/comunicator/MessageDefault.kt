@@ -1,11 +1,12 @@
-package com.example.comunicator
+package com.example.core.comunicator
 
 import java.util.*
 
-class MessageDefault(
-    override var time: Date = Date(),
-    override val text: String = "",
-    override val recipientId: String = "",
-    override val senderId: String = "",
-    override val senderName: String = ""
-) : Message
+data class Message(
+    var id:String ="",
+    var time: Date = Date(),
+    val text: String = "",
+    val recipientId: String = "",
+    val senderId: String = "",
+    val senderName: String = ""
+)

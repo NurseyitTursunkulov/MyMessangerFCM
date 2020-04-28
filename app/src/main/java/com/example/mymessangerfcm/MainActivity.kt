@@ -6,25 +6,25 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.app.ActivityCompat
-import com.example.core.domain.logic.core.User
+import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
+
+    val messangerViewModel: MessangerViewModel by viewModel<MessangerViewModel>()
+
     companion object {
 
         private const val RC_SIGN_IN = 123
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         singIn()
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+                .setAction("Action", null).show()
         }
     }
 
@@ -40,13 +40,14 @@ class MainActivity : AppCompatActivity() {
         val user = FirebaseAuth.getInstance().currentUser
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build())
-        if (user!=null) {
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
+        if (user != null) {
             // User is signed in.
 
-            Log.d("Nurs","if true $user")
+            Log.d("Nurs", "if true $user")
         } else {
-            Log.d("Nurs","if false $user")
+            Log.d("Nurs", "if false $user")
             // No user is signed in.
             startActivityForResult(
                 AuthUI.getInstance()
@@ -84,8 +85,8 @@ class MainActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in
                 val progressDialog = indeterminateProgressDialog("Setting up your account")
-                initCurrentUserIfFirstTime {
-//                    startActivity(intentFor<MainActivity>().newTask().clearTask())
+                messangerViewModel.getCurrentUser {
+                    //                    startActivity(intentFor<MainActivity>().newTask().clearTask())
                     progressDialog.dismiss()
                 }
                 // ...
@@ -120,19 +121,3 @@ private fun Context.progressDialog(
     show()
 }
 
-private val currentUserDocRef: DocumentReference
-    get() = FirebaseFirestore.getInstance().document("users/${FirebaseAuth.getInstance().currentUser?.uid
-        ?: throw NullPointerException("UID is null.")}")
-
-fun initCurrentUserIfFirstTime(onComplete: () -> Unit) {
-    currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
-        if (!documentSnapshot.exists()) {
-            val newUser = User(FirebaseAuth.getInstance().currentUser?.displayName ?: "",
-                "", null)
-            currentUserDocRef.set(newUser).addOnSuccessListener {
-                onComplete()
-            }
-        } else
-            onComplete()
-    }
-}
