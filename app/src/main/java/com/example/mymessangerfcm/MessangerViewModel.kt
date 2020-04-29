@@ -8,6 +8,7 @@ import com.example.core.comunicator.Message
 import com.example.core.comunicator.Result
 import com.example.core.domain.implementation.MessangerDomainImpl
 import com.example.core.domain.logic.core.Chat
+import com.example.core.domain.logic.core.MessangerDomain
 import com.example.core.domain.logic.core.User
 import com.example.mymessangerfcm.chat.Event
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MessangerViewModel(val messangerDomainImpl: MessangerDomainImpl) : ViewModel() {
+class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel() {
 
     var messageInputText: String = ""
 

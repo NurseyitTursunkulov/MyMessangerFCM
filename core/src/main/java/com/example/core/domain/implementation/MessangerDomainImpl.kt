@@ -44,7 +44,7 @@ class MessangerDomainImpl(
        return repositoryMessanger.getChatMessages(chatId)
     }
 
-    suspend fun getCurrentUser(onComplete: () -> Unit):Result<User>{
+    override suspend fun getCurrentUser(onComplete: () -> Unit):Result<User>{
         return repositoryMessanger.getCurrentUser {
             onComplete()
         }

@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.core.data.implementation.core.RepositoryMessangerImpl
 import com.example.core.data.logic.core.RepositoryMessanger
 import com.example.core.domain.implementation.MessangerDomainImpl
+import com.example.core.domain.logic.core.MessangerDomain
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
@@ -38,7 +39,7 @@ class App : Application() {
             )
         }
 
-        single<MessangerDomainImpl> {
+        single<MessangerDomain> {
             MessangerDomainImpl(
                 repositoryMessanger = get()
             )

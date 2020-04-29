@@ -12,4 +12,5 @@ interface MessangerDomain : LifeCycleObserver {
 
     suspend fun getChatsChannel():Result<List<Chat>>
     suspend fun getChatMessages(chatId:String): Flow<Message>
+    suspend fun getCurrentUser(onComplete: () -> Unit): Result<User>
 }
