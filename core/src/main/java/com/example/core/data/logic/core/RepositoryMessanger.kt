@@ -12,7 +12,7 @@ interface RepositoryMessanger {
     fun sendMessage(message: Message)
     fun subscribeForNewMessages()
     fun unsubscribe()
-    suspend fun getChats():List<Chat>
+    suspend fun getChats():Result<List<Chat>>
     suspend fun getChatMessages(chatId:String): Flow<Message>
     suspend fun getCurrentUser(onComplete: () -> Unit): Result<User>
 }

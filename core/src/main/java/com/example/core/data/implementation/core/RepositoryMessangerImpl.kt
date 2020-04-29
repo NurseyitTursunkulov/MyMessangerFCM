@@ -59,7 +59,8 @@ class RepositoryMessangerImpl : RepositoryMessanger {
         listener.remove()
     }
 
-    override suspend fun getChats(): List<Chat> {
+    override suspend fun getChats(): Result<List<Chat>> {
+        lateinit var result: Result<List<Chat>>
         val chatList = mutableListOf<Chat>()
         chatChannelsCollectionRef.get().addOnSuccessListener { querySnapshot ->
             querySnapshot.forEach { queryDocumentSnapshot ->
@@ -67,8 +68,11 @@ class RepositoryMessangerImpl : RepositoryMessanger {
                 chat.id = queryDocumentSnapshot.id
                 chatList.add(chat)
             }
+            result = Result.Success(chatList)
         }.addOnFailureListener {
             Log.d("Nurs", "getChats failure $it")
+            result = Result.Error(it)
+            return@addOnFailureListener
         }.await()
 
 //TODO optimize synchronyc operations!!!!
@@ -82,6 +86,7 @@ class RepositoryMessangerImpl : RepositoryMessanger {
                 }
                 .addOnFailureListener {
                     Log.d("Nurs", "oshibka messages")
+
                 }.await()
         }
 
@@ -93,7 +98,7 @@ class RepositoryMessangerImpl : RepositoryMessanger {
             }.await()
         }
         Log.d("Nurs", "chats = $chatList")
-        return chatList
+        return result
     }
 
 

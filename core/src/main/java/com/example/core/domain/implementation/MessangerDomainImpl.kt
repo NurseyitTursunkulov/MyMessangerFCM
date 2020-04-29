@@ -37,7 +37,7 @@ class MessangerDomainImpl(
         _newMessages.postValue(message)
     }
 
-    override suspend fun getChatsChannel(): List<Chat> =
+    override suspend fun getChatsChannel(): Result<List<Chat>> =
         repositoryMessanger.getChats()
 
     override suspend fun getChatMessages(chatId: String): Flow<Message> {

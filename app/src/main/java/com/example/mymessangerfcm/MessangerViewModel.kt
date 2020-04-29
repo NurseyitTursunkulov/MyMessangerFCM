@@ -39,8 +39,12 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomainImpl) : ViewMod
         viewModelScope.launch {
             _dataLoading.postValue(true)
             withContext(Dispatchers.IO) {
-                var getChatList: List<Chat> = messangerDomainImpl.getChatsChannel()
-                _items.postValue(getChatList)
+                var result = messangerDomainImpl.getChatsChannel()
+                when(result){
+                    is Result.Success-> _items.postValue(result.data)
+                    is Result.Error->{/**show error*/}
+                }
+
                 _dataLoading.postValue(false)
             }
         }
