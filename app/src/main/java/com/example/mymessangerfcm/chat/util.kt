@@ -7,7 +7,7 @@ import com.example.core.comunicator.Message
 const val TYPE_SEND = 1
 const val TYPE_RECIEVE = 2
 
-class TaskDiffCallback : DiffUtil.ItemCallback<Message>() {
+class ChatDiffCallback : DiffUtil.ItemCallback<Message>() {
     override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
         return oldItem.id == newItem.id
     }

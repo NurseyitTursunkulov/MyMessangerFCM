@@ -12,9 +12,13 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -36,8 +40,8 @@ class RepositoryMessangerImpl : RepositoryMessanger {
 
     private lateinit var listener: ListenerRegistration
 
-    override fun sendMessage(message: Message) {
-        messageCollectionReference
+    override fun sendMessage(chat: Chat, message: Message) {
+        chatChannelsCollectionRef.document(chat.id).collection("messages")
             .add(message)
     }
 
@@ -80,9 +84,12 @@ class RepositoryMessangerImpl : RepositoryMessanger {
         chatList.forEach { chat ->
             chatChannelsCollectionRef.document(chat.id).collection("messages").get()
                 .addOnSuccessListener { messages ->
+                    val messagesList = mutableListOf<Message>()
                     messages.forEach { message ->
-                        chat.messages.add(message.toObject(Message::class.java))
+                        messagesList.add(message.toObject(Message::class.java))
                     }
+                    messagesList.sortBy { it.time }
+                    chat.messages.addAll(messagesList)
                 }
                 .addOnFailureListener {
                     Log.d("Nurs", "oshibka messages")
@@ -103,21 +110,24 @@ class RepositoryMessangerImpl : RepositoryMessanger {
 
 
     @ExperimentalCoroutinesApi
-    override suspend fun getChatMessages(chatId: String): Flow<Message> = flow {
-        val eventDocument = chatChannelsCollectionRef
-            .document(chatId)
-        val subscription = eventDocument.addSnapshotListener { snapshot, _ ->
-            if (snapshot!!.exists()) {
-                val versionCode = snapshot.toObject(Message::class.java)
-                versionCode?.let {
-                    GlobalScope.launch {
-                        emit(it)
-                    }
-                    Log.d("Nurs", "new flow ${it.text}")
-                }
-            }
+    override suspend fun getChatMessages(
+        chatId: String
+    ): Flow<Message> = callbackFlow{
 
-        }
+        val subscription = chatChannelsCollectionRef .document(chatId).collection("messages").addSnapshotListener{
+               snapshot, _ ->
+           snapshot?.documentChanges?.forEach {
+                when(it.type){
+                    DocumentChange.Type.ADDED ->{
+                        val newMessage = it.document.toObject(Message::class.java)
+                        offer(newMessage)
+                        Log.d(TAG, "New city: ${it.document.data}")
+                    }
+                }
+           }
+       }
+        awaitClose { subscription.remove() }
+
     }
 
     private val currentUserDocRef: DocumentReference

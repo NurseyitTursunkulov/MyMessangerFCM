@@ -5,14 +5,17 @@ import com.example.core.comunicator.Result
 import com.example.core.domain.logic.core.Chat
 import com.example.core.domain.logic.core.MessangerDomain
 import com.example.core.domain.logic.core.User
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 interface RepositoryMessanger {
     var domain: MessangerDomain
-    fun sendMessage(message: Message)
+    fun sendMessage(chat:Chat,message: Message)
     fun subscribeForNewMessages()
     fun unsubscribe()
     suspend fun getChats():Result<List<Chat>>
-    suspend fun getChatMessages(chatId:String): Flow<Message>
+    suspend fun getChatMessages(
+        chatId: String
+    ): Flow<Message>
     suspend fun getCurrentUser(onComplete: () -> Unit): Result<User>
 }

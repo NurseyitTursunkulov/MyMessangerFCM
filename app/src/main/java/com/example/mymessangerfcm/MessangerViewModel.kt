@@ -1,18 +1,16 @@
 package com.example.mymessangerfcm
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.util.Log
+import androidx.lifecycle.*
 import com.example.core.comunicator.Message
 import com.example.core.comunicator.Result
-import com.example.core.domain.implementation.MessangerDomainImpl
 import com.example.core.domain.logic.core.Chat
 import com.example.core.domain.logic.core.MessangerDomain
 import com.example.core.domain.logic.core.User
 import com.example.mymessangerfcm.chat.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,8 +23,8 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
 
     var currentUser: User? = null
 
-    private val _items = MutableLiveData<List<Chat>>().apply { value = emptyList() }
-    val items: LiveData<List<Chat>> = _items
+    private val _chatChannelList = MutableLiveData<List<Chat>>().apply { value = emptyList() }
+    val chatChannelList: LiveData<List<Chat>> = _chatChannelList
 
     private val _navigateToChatEvent: MutableLiveData<Event<Chat>> = MutableLiveData()
     val navigateToChatEvent: LiveData<Event<Chat>> = _navigateToChatEvent
@@ -40,10 +38,12 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
         viewModelScope.launch {
             _dataLoading.postValue(true)
             withContext(Dispatchers.IO) {
-                var result = messangerDomainImpl.getChatsChannel()
-                when(result){
-                    is Result.Success-> _items.postValue(result.data)
-                    is Result.Error->{/**show error*/}
+                var result = messangerDomainImpl.getChatsChannels()
+                when (result) {
+                    is Result.Success -> _chatChannelList.postValue(result.data)
+                    is Result.Error -> {
+                        /**show error*/
+                    }
                 }
 
                 _dataLoading.postValue(false)
@@ -56,22 +56,27 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
         _navigateToChatEvent.postValue(Event(chat))
     }
 
-    fun sendMessage(message: Message) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                messangerDomainImpl.sendMessage(message = message)
+    fun sendMessage(chat: Chat, textMessage: String) {
+        if (textMessage.isNotEmpty()) {
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    val message = Message(
+                        text = textMessage,
+                        recipientId = chat.userIds.first(),
+                        senderId = currentUser?.id ?: chat.userIds[1],
+                        senderName = currentUser?.name ?: ""
+                    )
+                    messangerDomainImpl.sendMessage(chat = chat, message = message)
+                }
             }
         }
     }
 
     @InternalCoroutinesApi
-    fun getChatMessages(chatId: String) {
-        viewModelScope.launch {
-            messangerDomainImpl.getChatMessages(chatId).collect {
-
-            }
-        }
+    suspend fun getChatMessages(chatId: String): Flow<Message> {
+        return messangerDomainImpl.getChatMessages(chatId)
     }
+
 
     fun getCurrentUser(onComplete: () -> Unit) {
         viewModelScope.launch {

@@ -9,4 +9,6 @@ data class Message(
     val recipientId: String = "",
     val senderId: String = "",
     val senderName: String = ""
-)
+){
+    override fun toString(): String = "$text $senderName"
+}

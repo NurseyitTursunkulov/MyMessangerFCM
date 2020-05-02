@@ -1,14 +1,13 @@
 package com.example.mymessangerfcm.chat
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.core.comunicator.Message
 import com.example.mymessangerfcm.MessangerViewModel
 
 
 class ChatAdapter(val messangerViewModel: MessangerViewModel) :
-    ListAdapter<Message, SealedAdapterViewHolder>(TaskDiffCallback()) {
+    ListAdapter<Message, SealedAdapterViewHolder>(ChatDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SealedAdapterViewHolder {
         return if (viewType == TYPE_RECIEVE)
