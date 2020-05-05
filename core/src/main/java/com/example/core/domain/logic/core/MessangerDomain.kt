@@ -6,13 +6,10 @@ import kotlinx.coroutines.flow.Flow
 import com.example.core.comunicator.Result
 import kotlinx.coroutines.CoroutineScope
 
-interface MessangerDomain : LifeCycleObserver {
-    val newMessages: LiveData<Message>
+interface MessangerDomain  {
     suspend fun sendMessage(chat: Chat,message: Message)
-    fun onNewMessageRecieved(message: Message)
-
     suspend fun getChatsChannels():Result<List<Chat>>
-    suspend fun getChatMessages(
+    suspend fun getChatMessagesFlow(
         chatId: String
     ): Flow<Message>
     suspend fun getCurrentUser(onComplete: () -> Unit): Result<User>

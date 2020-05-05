@@ -1,6 +1,5 @@
 package com.example.mymessangerfcm
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.core.comunicator.Message
 import com.example.core.comunicator.Result
@@ -11,15 +10,12 @@ import com.example.mymessangerfcm.chat.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel() {
 
     var messageInputText: String = ""
-
-    val newMessageLiveData: LiveData<Message> = messangerDomainImpl.newMessages
 
     var currentUser: User? = null
 
@@ -34,7 +30,6 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
 
     init {
         getCurrentUser({})
-        messangerDomainImpl.observeNewMessages()
         viewModelScope.launch {
             _dataLoading.postValue(true)
             withContext(Dispatchers.IO) {
@@ -74,7 +69,7 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
 
     @InternalCoroutinesApi
     suspend fun getChatMessages(chatId: String): Flow<Message> {
-        return messangerDomainImpl.getChatMessages(chatId)
+        return messangerDomainImpl.getChatMessagesFlow(chatId)
     }
 
 
@@ -86,10 +81,5 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
                     currentUser = result.data
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        messangerDomainImpl.unsubscribeFromNewMessages()
     }
 }

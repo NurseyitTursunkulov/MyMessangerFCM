@@ -45,23 +45,23 @@ class RepositoryMessangerImpl : RepositoryMessanger {
             .add(message)
     }
 
-    override fun subscribeForNewMessages() {
-        listener = messageCollectionReference
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                querySnapshot?.documentChanges?.forEach { dc ->
-                    when (dc.type) {
-                        DocumentChange.Type.ADDED -> {
-                            domain.onNewMessageRecieved(dc.document.toObject(Message::class.java))
-                            Log.d(TAG, "New message: ${dc.document.data}")
-                        }
-                    }
-                }
-            }
-    }
-
-    override fun unsubscribe() {
-        listener.remove()
-    }
+//    override fun subscribeForNewMessages() {
+//        listener = messageCollectionReference
+//            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+//                querySnapshot?.documentChanges?.forEach { dc ->
+//                    when (dc.type) {
+//                        DocumentChange.Type.ADDED -> {
+//                            domain.onNewMessageRecieved(dc.document.toObject(Message::class.java))
+//                            Log.d(TAG, "New message: ${dc.document.data}")
+//                        }
+//                    }
+//                }
+//            }
+//    }
+//
+//    override fun unsubscribe() {
+//        listener.remove()
+//    }
 
     override suspend fun getChats(): Result<List<Chat>> {
         lateinit var result: Result<List<Chat>>

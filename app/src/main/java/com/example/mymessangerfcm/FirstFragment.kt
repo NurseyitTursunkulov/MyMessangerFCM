@@ -41,9 +41,6 @@ class FirstFragment : Fragment() {
                 FirstFragmentDirections.actionFirstFragmentToHomeFragment()
             findNavController().navigate(R.id.action_Global_to_SecondFragment)
         }
-        messangerViewModel.newMessageLiveData.observe(requireActivity(),Observer{
-            Log.d("Nurs","new message in fragment ${it.text}")
-        })
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
             val action =
                 FirstFragmentDirections.actionFirstFragmentToSecondFragment("From FirstFragment")

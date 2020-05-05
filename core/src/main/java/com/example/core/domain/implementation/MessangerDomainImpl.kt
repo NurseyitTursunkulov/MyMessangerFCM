@@ -19,35 +19,19 @@ class MessangerDomainImpl(
         repositoryMessanger.domain = this
     }
 
-    private val _newMessages: MutableLiveData<Message> = MutableLiveData()
-    override val newMessages: LiveData<Message> = _newMessages
-
-    override suspend fun sendMessage(chat: Chat,message: Message) {
-        repositoryMessanger.sendMessage(chat,message)
-    }
-
-    override fun observeNewMessages() {
-        repositoryMessanger.subscribeForNewMessages()
-    }
-
-    override fun unsubscribeFromNewMessages() {
-        repositoryMessanger.unsubscribe()
-    }
-
-    override fun onNewMessageRecieved(message: Message) {
-        _newMessages.postValue(message)
+    override suspend fun sendMessage(chat: Chat, message: Message) {
+        repositoryMessanger.sendMessage(chat, message)
     }
 
     override suspend fun getChatsChannels(): Result<List<Chat>> =
         repositoryMessanger.getChats()
 
-    override suspend fun getChatMessages(
+    override suspend fun getChatMessagesFlow(
         chatId: String
-    ): Flow<Message> {
-       return repositoryMessanger.getChatMessages(chatId)
-    }
+    ): Flow<Message> = repositoryMessanger.getChatMessages(chatId)
 
-    override suspend fun getCurrentUser(onComplete: () -> Unit):Result<User>{
+
+    override suspend fun getCurrentUser(onComplete: () -> Unit): Result<User> {
         return repositoryMessanger.getCurrentUser {
             onComplete()
         }
