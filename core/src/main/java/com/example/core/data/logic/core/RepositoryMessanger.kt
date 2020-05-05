@@ -11,8 +11,6 @@ import kotlinx.coroutines.flow.Flow
 interface RepositoryMessanger {
     var domain: MessangerDomain
     fun sendMessage(chat:Chat,message: Message)
-    fun subscribeForNewMessages()
-    fun unsubscribe()
     suspend fun getChats():Result<List<Chat>>
     suspend fun getChatMessages(
         chatId: String

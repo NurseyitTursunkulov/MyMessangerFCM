@@ -31,9 +31,6 @@ class RepositoryMessangerImpl : RepositoryMessanger {
 
     private val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
-    //TODO method must recieve parameter of chat
-    private val messageCollectionReference = firestoreInstance.collection("message")
-
     private val chatChannelsCollectionRef = firestoreInstance.collection("chatChannels")
 
     private val usersCollectionReference = firestoreInstance.collection("users")
@@ -44,24 +41,6 @@ class RepositoryMessangerImpl : RepositoryMessanger {
         chatChannelsCollectionRef.document(chat.id).collection("messages")
             .add(message)
     }
-
-//    override fun subscribeForNewMessages() {
-//        listener = messageCollectionReference
-//            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-//                querySnapshot?.documentChanges?.forEach { dc ->
-//                    when (dc.type) {
-//                        DocumentChange.Type.ADDED -> {
-//                            domain.onNewMessageRecieved(dc.document.toObject(Message::class.java))
-//                            Log.d(TAG, "New message: ${dc.document.data}")
-//                        }
-//                    }
-//                }
-//            }
-//    }
-//
-//    override fun unsubscribe() {
-//        listener.remove()
-//    }
 
     override suspend fun getChats(): Result<List<Chat>> {
         lateinit var result: Result<List<Chat>>
@@ -89,6 +68,9 @@ class RepositoryMessangerImpl : RepositoryMessanger {
                         messagesList.add(message.toObject(Message::class.java))
                     }
                     messagesList.sortBy { it.time }
+                    messagesList.forEach {
+                        Log.d("messages","${it.time}")
+                    }
                     chat.messages.addAll(messagesList)
                 }
                 .addOnFailureListener {

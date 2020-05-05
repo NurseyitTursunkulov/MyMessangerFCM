@@ -1,6 +1,7 @@
 package com.example.mymessangerfcm.chat
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -48,11 +49,16 @@ class ChatFragment : Fragment() {
                 messangerViewModel.getChatMessages(
                     chat.id
                 ).collect {
-                    chat.messages.add(it)
-                    listAdapter.submitList(
-                        chat.messages
-                    )
-                    listAdapter.notifyDataSetChanged()
+
+                    if (it !in chat.messages){
+                        Log.d("new message ","${it.text}")
+                        chat.messages.add(it)
+                        listAdapter.submitList(
+                            chat.messages
+                        )
+                        listAdapter.notifyDataSetChanged()
+                    }
+
                 }
             }
         }
