@@ -10,6 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.api.load
 import coil.transform.CircleCropTransformation
+import com.example.core.comunicator.Message
+import com.example.core.domain.logic.core.Chat
 import com.example.mymessangerfcm.MessangerViewModel
 import com.example.mymessangerfcm.R
 import com.example.mymessangerfcm.databinding.FragmentChatBinding
@@ -49,14 +51,9 @@ class ChatFragment : Fragment() {
                 messangerViewModel.getChatMessages(
                     chat.id
                 ).collect {
-
                     if (it !in chat.messages){
-                        Log.d("new message ","${it.text}")
-                        chat.messages.add(it)
-                        listAdapter.submitList(
-                            chat.messages
-                        )
-                        listAdapter.notifyDataSetChanged()
+                        addToChatList(chat, it)
+                        scrollToLastMessage()
                     }
 
                 }
