@@ -1,23 +1,18 @@
 package com.example.mymessangerfcm.chat
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import coil.api.load
 import coil.transform.CircleCropTransformation
-import com.example.core.comunicator.Message
-import com.example.core.domain.logic.core.Chat
 import com.example.mymessangerfcm.MessangerViewModel
 import com.example.mymessangerfcm.R
 import com.example.mymessangerfcm.databinding.FragmentChatBinding
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ChatFragment : Fragment() {
@@ -46,18 +41,17 @@ class ChatFragment : Fragment() {
         backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            messangerViewModel.navigateToChatEvent.value?.peekContent()?.let { chat ->
-                messangerViewModel.getChatMessages(
-                    chat.id
-                ).collect {
-                    if (it !in chat.messages){
-                        addToChatList(chat, it)
-                        scrollToLastMessage()
-                    }
-
-                }
-            }
+        messangerViewModel.playSoundEvent.observe(viewLifecycleOwner, EventObserver {
+            makeSound(requireContext())
+        })
+        messangerViewModel.newMessageLiveData.observe(viewLifecycleOwner, Observer {
+            refreshAdapterItems()
+            scrollToLastMessage()
+        })
+        getChatId()?.let { chatId ->
+            messangerViewModel.observeChatForNewMessages(chatId)
         }
+
     }
+
 }

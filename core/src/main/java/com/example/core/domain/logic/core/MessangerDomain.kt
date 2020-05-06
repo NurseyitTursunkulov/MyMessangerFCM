@@ -7,6 +7,7 @@ import com.example.core.comunicator.Result
 import kotlinx.coroutines.CoroutineScope
 
 interface MessangerDomain  {
+    var currentChat:Chat?
     suspend fun sendMessage(chat: Chat,message: Message)
     suspend fun getChatsChannels():Result<List<Chat>>
     suspend fun getChatMessagesFlow(

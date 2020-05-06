@@ -9,7 +9,7 @@ import com.example.core.domain.logic.core.User
 import com.example.mymessangerfcm.chat.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -25,56 +25,66 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
     private val _navigateToChatEvent: MutableLiveData<Event<Chat>> = MutableLiveData()
     val navigateToChatEvent: LiveData<Event<Chat>> = _navigateToChatEvent
 
+    private val _playSoundEvent: MutableLiveData<Event<Unit>> = MutableLiveData()
+    val playSoundEvent: LiveData<Event<Unit>> = _playSoundEvent
+
+    private val _newMessageLiveData: MutableLiveData<Message> = MutableLiveData()
+    val newMessageLiveData: LiveData<Message> = _newMessageLiveData
+
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
 
     init {
-        getCurrentUser({})
-        viewModelScope.launch {
+        launchCoroutineOnDispatcherIO {
             _dataLoading.postValue(true)
-            withContext(Dispatchers.IO) {
-                var result = messangerDomainImpl.getChatsChannels()
-                when (result) {
-                    is Result.Success -> _chatChannelList.postValue(result.data)
-                    is Result.Error -> {
-                        /**show error*/
-                    }
+            val result = messangerDomainImpl.getChatsChannels()
+            when (result) {
+                is Result.Success -> _chatChannelList.postValue(result.data)
+                is Result.Error -> {
+                    /**show error*/
                 }
-
-                _dataLoading.postValue(false)
             }
+
+            _dataLoading.postValue(false)
         }
     }
 
     fun openChat(chat: Chat) {
         getCurrentUser({})
         _navigateToChatEvent.postValue(Event(chat))
+        messangerDomainImpl.currentChat = chat
     }
 
     fun sendMessage(chat: Chat, textMessage: String) {
         if (textMessage.isNotEmpty()) {
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    val message = Message(
-                        text = textMessage,
-                        recipientId = chat.userIds.first(),
-                        senderId = currentUser?.id ?: chat.userIds[1],
-                        senderName = currentUser?.name ?: ""
-                    )
-                    messangerDomainImpl.sendMessage(chat = chat, message = message)
-                }
+            launchCoroutineOnDispatcherIO {
+                val message = Message(
+                    text = textMessage,
+                    recipientId = chat.userIds.first(),
+                    senderId = currentUser?.id ?: chat.userIds[1],
+                    senderName = currentUser?.name ?: ""
+                )
+                messangerDomainImpl.sendMessage(chat = chat, message = message)
             }
+
         }
     }
 
     @InternalCoroutinesApi
-    suspend fun getChatMessages(chatId: String): Flow<Message> {
-        return messangerDomainImpl.getChatMessagesFlow(chatId)
+    fun observeChatForNewMessages(chatId: String) {
+        launchCoroutineOnDispatcherIO {
+            messangerDomainImpl.getChatMessagesFlow(chatId)
+                .collect { newMsg ->
+                    getCurrentChat()?.let { chat ->
+                        displayNewMessage(newMsg, chat)
+                    }
+                }
+        }
     }
 
 
     fun getCurrentUser(onComplete: () -> Unit) {
-        viewModelScope.launch {
+        launchCoroutineOnDispatcherIO {
             val result = messangerDomainImpl.getCurrentUser { onComplete }
             when (result) {
                 is Result.Success ->
@@ -82,4 +92,19 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
             }
         }
     }
+
+    private fun displayNewMessage(
+        newMsg: Message,
+        chat: Chat
+    ) {
+        if (isNewMessage(newMsg, chat)) {
+            chat.messages.add(newMsg)
+            _newMessageLiveData.postValue(newMsg)
+            if (isNotMyMessage(newMsg))
+                _playSoundEvent.postValue(Event(Unit))
+        }
+    }
+
+    private fun getCurrentChat(): Chat? = _navigateToChatEvent.value?.peekContent()
+
 }

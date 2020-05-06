@@ -19,6 +19,8 @@ class MessangerDomainImpl(
         repositoryMessanger.domain = this
     }
 
+    override var currentChat: Chat? = null
+
     override suspend fun sendMessage(chat: Chat, message: Message) {
         repositoryMessanger.sendMessage(chat, message)
     }

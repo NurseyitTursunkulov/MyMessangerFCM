@@ -1,9 +1,11 @@
 package com.example.mymessangerfcm.chat
 
+import android.content.Context
+import android.media.RingtoneManager
+import android.net.Uri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.core.comunicator.Message
-import com.example.core.domain.logic.core.Chat
 
 const val TYPE_SEND = 1
 const val TYPE_RECIEVE = 2
@@ -41,12 +43,20 @@ fun ChatFragment.scrollToLastMessage() {
     }
 }
 
-fun ChatFragment.addToChatList(
-    chat: Chat,
-    it: Message
-) {
-    chat.messages.add(it)
+fun ChatFragment.refreshAdapterItems() {
     listAdapter.submitList(
-        chat.messages
+        messangerViewModel.navigateToChatEvent.value?.peekContent()?.messages
     )
+}
+
+fun ChatFragment.getChatId() = messangerViewModel.navigateToChatEvent.value?.peekContent()?.id
+
+fun makeSound(context: Context) {
+    try {
+        val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val r = RingtoneManager.getRingtone(context, notification)
+        r.play()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
