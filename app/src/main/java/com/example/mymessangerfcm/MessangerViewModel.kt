@@ -85,7 +85,7 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
 
     fun getCurrentUser(onComplete: () -> Unit) {
         launchCoroutineOnDispatcherIO {
-            val result = messangerDomainImpl.getCurrentUser { onComplete }
+            val result : Result<User> = messangerDomainImpl.getCurrentUser { onComplete }
             when (result) {
                 is Result.Success ->
                     currentUser = result.data
@@ -97,12 +97,11 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
         newMsg: Message,
         chat: Chat
     ) {
-        if (isNewMessage(newMsg, chat)) {
-            chat.messages.add(newMsg)
-            _newMessageLiveData.postValue(newMsg)
-            if (isNotMyMessage(newMsg))
-                _playSoundEvent.postValue(Event(Unit))
-        }
+        chat.messages.add(newMsg)
+        _newMessageLiveData.postValue(newMsg)
+        if (isNotMyMessage(newMsg))
+            _playSoundEvent.postValue(Event(Unit))
+
     }
 
     private fun getCurrentChat(): Chat? = _navigateToChatEvent.value?.peekContent()

@@ -16,10 +16,6 @@ fun MessangerViewModel.launchCoroutineOnDispatcherIO(function: suspend () -> Uni
     }
 }
 
-fun isNewMessage(
-    newMsg: Message,
-    chat: Chat
-): Boolean = newMsg !in chat.messages
 
 fun MessangerViewModel.isNotMyMessage(newMessage: Message): Boolean =
     newMessage.senderId != currentUser?.id

@@ -51,7 +51,5 @@ class ChatFragment : Fragment() {
         getChatId()?.let { chatId ->
             messangerViewModel.observeChatForNewMessages(chatId)
         }
-
     }
-
 }
