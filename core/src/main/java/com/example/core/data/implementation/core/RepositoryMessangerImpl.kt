@@ -37,7 +37,7 @@ class RepositoryMessangerImpl : RepositoryMessanger {
 
     private lateinit var listener: ListenerRegistration
 
-    override fun sendMessage(chat: Chat, message: Message) {
+    override suspend fun sendMessage(chat: Chat, message: Message) {
         chatChannelsCollectionRef.document(chat.id).collection("messages")
             .add(message)
     }

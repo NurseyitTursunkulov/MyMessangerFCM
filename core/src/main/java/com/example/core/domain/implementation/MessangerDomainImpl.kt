@@ -32,7 +32,7 @@ class MessangerDomainImpl(
         return repositoryMessanger.getChatMessages(chatId).filter { newMsg ->
             currentChat?.messages?.let { messageList ->
                 isNewMessage(newMsg,messageList)
-            } ?: false
+            } ?: true
         }
     }
 
