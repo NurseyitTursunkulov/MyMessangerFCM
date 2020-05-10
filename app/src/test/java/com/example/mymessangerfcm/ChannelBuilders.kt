@@ -1,4 +1,4 @@
-package com.example.core
+package com.example.mymessangerfcm
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BroadcastChannel

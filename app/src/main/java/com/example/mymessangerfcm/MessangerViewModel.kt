@@ -55,18 +55,9 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
         messangerDomainImpl.currentChat = chat
     }
 
-    fun sendMessage(chat: Chat, textMessage: String) {
-        if (textMessage.isNotEmpty()) {
-            launchCoroutineOnDispatcherIO {
-                val message = Message(
-                    text = textMessage,
-                    recipientId = chat.userIds.first(),
-                    senderId = currentUser?.id ?: chat.userIds[1],
-                    senderName = currentUser?.name ?: ""
-                )
-                messangerDomainImpl.sendMessage(chat = chat, message = message)
-            }
-
+    fun sendMessage(chat: Chat, message: Message) {
+        launchCoroutineOnDispatcherIO {
+            messangerDomainImpl.sendMessage(chat = chat, message = message)
         }
     }
 
@@ -85,7 +76,7 @@ class MessangerViewModel(val messangerDomainImpl: MessangerDomain) : ViewModel()
 
     fun getCurrentUser(onComplete: () -> Unit) {
         launchCoroutineOnDispatcherIO {
-            val result : Result<User> = messangerDomainImpl.getCurrentUser { onComplete }
+            val result: Result<User> = messangerDomainImpl.getCurrentUser { onComplete }
             when (result) {
                 is Result.Success ->
                     currentUser = result.data

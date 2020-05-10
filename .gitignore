@@ -100,3 +100,4 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 /projectFilesBackup/.idea/workspace.xml
+/projectFilesBackup1/.idea/workspace.xml

@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import coil.api.load
 import coil.transform.CircleCropTransformation
+import com.example.core.comunicator.Message
 import com.example.mymessangerfcm.MessangerViewModel
 import com.example.mymessangerfcm.R
 import com.example.mymessangerfcm.databinding.FragmentChatBinding
@@ -38,6 +40,9 @@ class ChatFragment : Fragment() {
             transformations(CircleCropTransformation())
         }
         setupListAdapter()
+        voiceRecordingOrSend.setOnClickListener {
+            sentMessage()
+        }
         backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }

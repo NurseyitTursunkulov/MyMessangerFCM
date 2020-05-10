@@ -20,6 +20,24 @@ class ChatDiffCallback : DiffUtil.ItemCallback<Message>() {
     }
 }
 
+fun ChatFragment.sentMessage() {
+    with(messangerViewModel) {
+        navigateToChatEvent.value?.peekContent()?.let { chat ->
+            if (messageInputText.isNotEmpty()) {
+                val message = com.example.core.comunicator.Message(
+                    text = messageInputText,
+                    recipientId = chat.userIds.first(),
+                    senderId = currentUser?.id ?: chat.userIds[1],
+                    senderName = currentUser?.name ?: ""
+                )
+                sendMessage(
+                    chat, message
+                )
+            }
+        }
+    }
+}
+
 fun ChatFragment.setupListAdapter() {
     viewDataBinding.messagesRv.layoutManager = LinearLayoutManager(requireContext())
     listAdapter = ChatAdapter(messangerViewModel)
